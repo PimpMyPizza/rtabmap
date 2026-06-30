@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.14)
 PROJECT( RTABMap )
 SET(PROJECT_PREFIX rtabmap)
 
-# Catkin doesn't support multiarch library path, 
+# Catkin doesn't support multiarch library path,
 # fix to "lib" if not set by user.
 OPTION(MULTI_ARCH "Activate multi-arch lib directory (debian)" OFF)
 IF(NOT MULTI_ARCH AND NOT DEFINED CMAKE_INSTALL_LIBDIR)
@@ -33,7 +33,7 @@ ENDIF()
 IF(RTABMAP_PATCH_VERSION GREATER 99)
 MESSAGE(FATAL_ERROR "RTABMAP_PATCH_VERSION must be < 100, bump minor version and restart patch to 0!")
 ENDIF()
-  
+
 SET(PROJECT_VERSION "${RTABMAP_VERSION}")
 
 SET(PROJECT_VERSION_MAJOR ${RTABMAP_MAJOR_VERSION})
@@ -93,8 +93,8 @@ IF(MINGW)
     SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,--enable-auto-import")
 ENDIF(MINGW)
 
-#The CDT Error Parser cannot handle error messages that span 
-#more than one line, which is the default gcc behavior. 
+#The CDT Error Parser cannot handle error messages that span
+#more than one line, which is the default gcc behavior.
 #In order to force gcc to generate single line error messages with no line wrapping
 IF(CMAKE_COMPILER_IS_GNUCC)
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
@@ -115,7 +115,7 @@ if(MSVC)
   add_compile_options("/bigobj")
 endif()
 
-# [Eclipse] Automatic Discovery of Include directories (Optional, but handy) 
+# [Eclipse] Automatic Discovery of Include directories (Optional, but handy)
 #SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 #Other paths...
@@ -150,7 +150,7 @@ else()
   set(DEF_INSTALL_CMAKE_DIR ${CMAKE_INSTALL_LIBDIR}/${PROJECT_PREFIX}-${RTABMAP_MAJOR_VERSION}.${RTABMAP_MINOR_VERSION})
 endif()
 set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR})
-  
+
 ####### BUILD OPTIONS #######
 include (GenerateExportHeader)
 # ANDROID_PREBUILD (early exit if true)
@@ -176,11 +176,11 @@ option(WITH_QT            "Include Qt support"                   ON)
 ENDIF()
 option(WITH_ORB_OCTREE    "Include ORB Octree feature support"   ON)
 option(WITH_TORCH         "Include Torch support (SuperPoint)"   OFF)
-option(WITH_PYTHON        "Include Python3 support (PyMatcher, PyDetector)"  OFF)
+option(WITH_PYTHON        "Include Python3 support (PyMatcher, PyDetector)"  ON)
 option(WITH_PYTHON_THREADING  "Use more than one Python interpreter."  OFF)
 option(WITH_PDAL          "Include PDAL support"                 ON)
 option(WITH_LIBLAS        "Include libLAS support"               OFF)
-option(WITH_CUDASIFT      "Include CudaSift support (this fork https://github.com/matlabbe/CudaSift)" OFF) 
+option(WITH_CUDASIFT      "Include CudaSift support (this fork https://github.com/matlabbe/CudaSift)" OFF)
 option(WITH_FREENECT      "Include Freenect support"             ON)
 option(WITH_FREENECT2     "Include Freenect2 support"            ON)
 option(WITH_K4W2          "Include Kinect for Windows v2 support" ON)
@@ -191,7 +191,7 @@ option(WITH_DC1394        "Include dc1394 support"               ON)
 option(WITH_G2O           "Include g2o support"                  ON)
 option(WITH_GTSAM         "Include GTSAM support"                ON)
 option(WITH_TORO          "Include TORO support"                 ON)
-option(WITH_CERES         "Include Ceres support"                OFF)
+option(WITH_CERES         "Include Ceres support"                ON)
 option(WITH_MRPT          "Include MRPT support"                 ON)
 option(WITH_VERTIGO       "Include Vertigo support"              ON)
 option(WITH_CVSBA         "Include cvsba support"                OFF)
@@ -230,7 +230,7 @@ option(WITH_FASTCV        "Include FastCV support"               ON)
 option(WITH_OPENMP        "Include OpenMP support"               ON)
 option(WITH_OPENGV        "Include OpenGV support"               ON)
 option(BUILD_OPENGV       "Build OpenGV internally instead of using the system one" OFF)
-option(WITH_APRILTAG      "Include AprilTag support"             OFF)
+option(WITH_APRILTAG      "Include AprilTag support"             ON)
 IF(MOBILE_BUILD)
 option(PCL_OMP            "With PCL OMP implementations"         OFF)
 ELSE()
@@ -342,9 +342,9 @@ IF(WITH_QT)
         ENDIF(RTABMAP_QT_VERSION STREQUAL "AUTO" OR RTABMAP_QT_VERSION STREQUAL "4")
       ENDIF(NOT Qt5_FOUND)
     ENDIF()
-        
+
     IF(QT4_FOUND OR Qt5_FOUND OR Qt6_FOUND)
-        # For VCPKG build, set those global variables to off, 
+        # For VCPKG build, set those global variables to off,
         # we will enable them for jsut specific targets
         set(CMAKE_AUTOMOC OFF)
         set(CMAKE_AUTORCC OFF)
@@ -614,7 +614,7 @@ IF(WITH_CCCORELIB)
 ENDIF(WITH_CCCORELIB)
 
 IF(WITH_OPEN3D)
-    IF(${CMAKE_VERSION} VERSION_LESS "3.19.0") 
+    IF(${CMAKE_VERSION} VERSION_LESS "3.19.0")
        MESSAGE(WARNING "Open3D requires CMake version >=3.19 (current is ${CMAKE_VERSION})")
     ELSE()
        # Build Open3D like this to avoid linker errors in rtabmap:
@@ -650,7 +650,7 @@ ENDIF(WITH_LIOSAM)
 SET(ZED_FOUND FALSE)
 IF(WITH_ZED)
     find_package(ZED 2 QUIET)
-    
+
     IF(ZED_FOUND)
        MESSAGE(STATUS "Found ZED sdk: ${ZED_INCLUDE_DIRS}")
        ## look for CUDA
@@ -886,14 +886,14 @@ IF(WITH_OPENGV OR okvis_FOUND)
       if(PCL_USING_MARCHNATIVE)
          set(MSG_EXTRA "with -march-native (used by PCL)")
       endif()
-   
-      message(STATUS "Download/Build OpenGV internally (BUILD_OPENGV=ON) ${MSG_EXTRA}.")     
+
+      message(STATUS "Download/Build OpenGV internally (BUILD_OPENGV=ON) ${MSG_EXTRA}.")
       function(add_submodule_opengv)
          FetchContent_Declare(
             opengv
             GIT_REPOSITORY https://github.com/laurentkneip/opengv.git
             GIT_TAG        91f4b19c73450833a40e463ad3648aae80b3a7f3
-            PATCH_COMMAND ${CMAKE_COMMAND} 
+            PATCH_COMMAND ${CMAKE_COMMAND}
                   -DPATCH_FILE=${CMAKE_CURRENT_LIST_DIR}/patches/opengv_91f4b19c.patch
                   -P ${CMAKE_CURRENT_LIST_DIR}/patches/apply_patch.cmake
          )
@@ -984,14 +984,14 @@ ENDIF()
 ####### OSX BUNDLE CMAKE_INSTALL_PREFIX #######
 IF(APPLE AND BUILD_AS_BUNDLE)
   IF(Qt6_FOUND OR Qt5_FOUND OR (QT4_FOUND AND QT_QTCORE_FOUND AND QT_QTGUI_FOUND))
-       
+
     # Required when packaging, and set CMAKE_INSTALL_PREFIX to "/".
     SET(CMAKE_INSTALL_PREFIX "/")
-    SET(CPACK_SET_DESTDIR TRUE) 
-    
+    SET(CPACK_SET_DESTDIR TRUE)
+
     SET(CMAKE_BUNDLE_NAME "${PROJECT_NAME}")
     SET(CMAKE_BUNDLE_LOCATION "${CMAKE_INSTALL_PREFIX}")
-    
+
     # make sure CMAKE_INSTALL_PREFIX ends in /
     STRING(LENGTH "${CMAKE_INSTALL_PREFIX}" LEN)
     MATH(EXPR LEN "${LEN} -1" )
@@ -999,10 +999,10 @@ IF(APPLE AND BUILD_AS_BUNDLE)
     IF(NOT "${ENDCH}" STREQUAL "/")
       SET(CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/")
     ENDIF(NOT "${ENDCH}" STREQUAL "/")
-    SET(CMAKE_INSTALL_PREFIX 
+    SET(CMAKE_INSTALL_PREFIX
       "${CMAKE_INSTALL_PREFIX}${CMAKE_BUNDLE_NAME}.app/Contents")
   ELSE()
-    
+
     #If Qt is not here, no need to build a bundle
     SET(BUILD_AS_BUNDLE OFF)
   ENDIF()
@@ -1017,7 +1017,7 @@ ENDIF(APPLE AND BUILD_AS_BUNDLE)
 IF(NOT (OPENCV_NONFREE_FOUND OR OPENCV_XFEATURES2D_FOUND))
    SET(NONFREE "//")
 ELSEIF(OpenCV_VERSION VERSION_GREATER "3.4.2")
-  FIND_FILE(OpenCV_MODULES_HPP opencv2/opencv_modules.hpp 
+  FIND_FILE(OpenCV_MODULES_HPP opencv2/opencv_modules.hpp
     PATHS ${OpenCV_INCLUDE_DIRS}
     NO_DEFAULT_PATH)
   FILE(READ ${OpenCV_MODULES_HPP} TMPTXT)
@@ -1349,7 +1349,7 @@ install(
   COMPONENT
     devel
 )
-  
+
 ####
 
 ### Install package.xml for catkin
@@ -1387,11 +1387,11 @@ SET(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
 SET(CPACK_PACKAGE_CONTACT "matlabbe@gmail.com")
 
 
-set(CPACK_SOURCE_IGNORE_FILES 
-  "\\\\.svn/" 
-  "\\\\.settings/" 
-  "${PROJECT_SOURCE_DIR}/build/[a-zA-Z0-9_]+" 
-  "~$" 
+set(CPACK_SOURCE_IGNORE_FILES
+  "\\\\.svn/"
+  "\\\\.settings/"
+  "${PROJECT_SOURCE_DIR}/build/[a-zA-Z0-9_]+"
+  "~$"
   "${PROJECT_SOURCE_DIR}/bin/.*${PROJECT_PREFIX}"
   "${PROJECT_SOURCE_DIR}/bin/.*${PROJECT_NAME}"
   "${PROJECT_SOURCE_DIR}/bin/.*[tT]est"
@@ -1402,10 +1402,10 @@ set(CPACK_SOURCE_IGNORE_FILES
 
 IF(WIN32)
   SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
-  IF(CMAKE_CL_64) 
-    SET(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64") 
-  ELSE() 
-    SET(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES") 
+  IF(CMAKE_CL_64)
+    SET(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
+  ELSE()
+    SET(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
   ENDIF()
   IF(BUILD_AS_BUNDLE)
     SET(CPACK_GENERATOR "ZIP;NSIS")
@@ -1427,20 +1427,20 @@ IF(WIN32)
   # Set the icon used for the Windows "Add or Remove Programs" tool.
   SET(CPACK_NSIS_INSTALLED_ICON_NAME bin\\\\${PROJECT_NAME}.exe)
   # Desktop link ("executableName" "linkName")
-  SET(CPACK_PACKAGE_EXECUTABLES "${PROJECT_NAME}" "${PROJECT_NAME}" ${CPACK_PACKAGE_EXECUTABLES}) 
-  SET(CPACK_CREATE_DESKTOP_LINKS "${PROJECT_NAME}" ${CPACK_CREATE_DESKTOP_LINKS}) 
+  SET(CPACK_PACKAGE_EXECUTABLES "${PROJECT_NAME}" "${PROJECT_NAME}" ${CPACK_PACKAGE_EXECUTABLES})
+  SET(CPACK_CREATE_DESKTOP_LINKS "${PROJECT_NAME}" ${CPACK_CREATE_DESKTOP_LINKS})
   SET(CPACK_NSIS_MODIFY_PATH ON)
-  
+
 ELSEIF(APPLE)
   # The project is created as a bundle over the main app (see ./app/src).
-  # Here we package only this bundle. Note that we set 
+  # Here we package only this bundle. Note that we set
   # CMAKE_INSTALL_PREFIX to "/" when packaging...
   IF(BUILD_AS_BUNDLE)
     SET(CPACK_GENERATOR "DragNDrop")
   ELSE()
     SET(CPACK_GENERATOR "PackageMaker;TBZ2")
   ENDIF()
-  
+
   SET(CPACK_SOURCE_GENERATOR "ZIP")
 
   SET(CPACK_PACKAGE_ICON "${PROJECT_SOURCE_DIR}/app/src/${PROJECT_NAME}.icns")
